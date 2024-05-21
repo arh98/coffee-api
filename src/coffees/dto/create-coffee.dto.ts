@@ -1,12 +1,17 @@
-import { IsString } from '@nestjs/class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateCoffeeDto {
     @IsString()
-    readonly name: string;
+    readonly title: string;
 
     @IsString()
     readonly brand: string;
 
-    @IsString({ each: true })
-    readonly flavors?: string[];
+    // @IsString()
+    // readonly description: string = '';
+
+    @IsString({
+        each: true,
+    })
+    readonly flavors?: string[] = [];
 }
