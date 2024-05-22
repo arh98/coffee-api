@@ -12,10 +12,16 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from 'src/common/pagination-query.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('coffees')
 export class CoffeesController {
-    constructor(private readonly service: CoffeesService) {}
+    constructor(
+        private readonly service: CoffeesService,
+        private readonly configService: ConfigService,
+    ) {
+        console.log(this.configService.get<string>('DB_HOST'));
+    }
 
     @Get()
     findAll(@Query() paginationQuery: PaginationQueryDto) {

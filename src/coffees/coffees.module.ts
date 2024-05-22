@@ -6,6 +6,7 @@ import { Coffee } from './entities/coffee.entity';
 import { Flavor } from './entities/flavor.entity';
 import { EventEntity } from './../events/entities/event.entity';
 import { COFFEE_BRANDS } from './coffees-constants';
+import { ConfigModule } from '@nestjs/config';
 
 class CustomService {}
 
@@ -21,7 +22,10 @@ export class CoffeeBrandFactory {
 }
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Coffee, Flavor, EventEntity])],
+    imports: [
+        TypeOrmModule.forFeature([Coffee, Flavor, EventEntity]),
+        ConfigModule,
+    ],
     controllers: [CoffeesController],
     providers: [
         CoffeesService,
@@ -38,11 +42,11 @@ export class CoffeeBrandFactory {
                     : StrategyTwo,
         },
         // 3-factory providers :
-        {
-            provide: CoffeeBrandFactory,
-            useFactory: (bf: CoffeeBrandFactory) => bf.create(),
-            inject: [CoffeeBrandFactory],
-        },
+        // {
+        //     provide: CoffeeBrandFactory,
+        //     useFactory: (bf: CoffeeBrandFactory) => bf.create(),
+        //     inject: [CoffeeBrandFactory],
+        // },
         {
             provide: COFFEE_BRANDS,
             useFactory: async () => {
@@ -52,7 +56,7 @@ export class CoffeeBrandFactory {
             },
         },
     ],
-    // providers are encapsulated by default , to use them : import module + export here 
-    exports :[CoffeesService]
+    // providers are encapsulated by default , to use them : import module + export here
+    exports: [CoffeesService],
 })
 export class CoffeesModule {}

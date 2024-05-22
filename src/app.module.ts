@@ -3,24 +3,26 @@ import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
 import { ConfigModule } from '@nestjs/config';
+import ormConfig from './config/orm.config';
+import ormConfigProd from './config/orm.config.prod';
+import validationSchema from './config/validation-schema';
 
 @Module({
     imports: [
-        // ConfigModule.forRoot(),
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            database: 'coffees',
-            host: 'localhost',
-            port: 27027,
-            username: 'postgres',
-            password: '4321',
-            // database: process.env.DATABASE_NAME,
-            // host: process.env.DATABASE_HOST,
-            // port: +process.env.DATABASE_PORT,
-            // username: process.env.DATABASE_USERNAME,
-            // password: process.env.DATABASE_PASSWORD,
-            autoLoadEntities: true,
-            synchronize: process.env.NODE_ENV === 'production' ? false : true,
+        ConfigModule.forRoot({
+            isGlobal: true,
+            load: [ormConfig],
+            expandVariables: true,
+            envFilePath: process.env.NODE_ENV
+                ? `.env.${process.env.NODE_ENV}`
+                : '.env',
+            validationSchema: validationSchema,
+        }),
+        TypeOrmModule.forRootAsync({
+            useFactory:
+                process.env.NODE_ENV !== 'production'
+                    ? ormConfig
+                    : ormConfigProd,
         }),
         CoffeesModule,
     ],
