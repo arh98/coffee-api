@@ -11,8 +11,11 @@ import {
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
-import { PaginationQueryDto } from 'src/common/pagination-query.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { ConfigService } from '@nestjs/config';
+import { Public } from 'src/common/decorators/public-decorator';
+import { IntParserPipe } from 'src/common/pipes/int-parser/int-parser.pipe';
+import { Protocol } from 'src/common/decorators/protocol-decorator';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -23,13 +26,18 @@ export class CoffeesController {
         console.log(this.configService.get<string>('DB_HOST'));
     }
 
+    @Public()
     @Get()
-    findAll(@Query() paginationQuery: PaginationQueryDto) {
+    findAll(
+        @Query() paginationQuery: PaginationQueryDto,
+        @Protocol('https') prtl: string,
+    ) {
+        console.log(prtl);
         return this.service.findAll(paginationQuery);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', IntParserPipe) id: string) {
         return this.service.findOne(id);
     }
 
