@@ -16,7 +16,9 @@ import { ConfigService } from '@nestjs/config';
 import { Public } from 'src/common/decorators/public-decorator';
 import { IntParserPipe } from 'src/common/pipes/int-parser/int-parser.pipe';
 import { Protocol } from 'src/common/decorators/protocol-decorator';
+import { ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
     constructor(
@@ -36,6 +38,7 @@ export class CoffeesController {
         return this.service.findAll(paginationQuery);
     }
 
+    @ApiForbiddenResponse({ description: 'forbidden without api key' })
     @Get(':id')
     findOne(@Param('id', IntParserPipe) id: string) {
         return this.service.findOne(id);
