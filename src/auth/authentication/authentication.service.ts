@@ -73,6 +73,8 @@ export class AuthenticationService {
             this.signToken<Partial<ActiveUserData>>(user.id, accTokenExp, {
                 email: user.email,
                 role: user.role,
+                // made jwt heavy!!
+                permissions: user.permissions,
             }),
             this.signToken(user.id, refreshTokenExp, { refreshTokenId }),
         ]);

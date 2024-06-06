@@ -19,6 +19,8 @@ import { Protocol } from 'src/common/decorators/protocol-decorator';
 import { ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/authorization/decorators/role.decorator';
 import { Role } from 'src/users/enums/user-role.enum';
+import { Permission } from 'src/auth/authorization/permission.type';
+import { Permissions } from 'src/auth/authorization/decorators/permission.decorator';
 
 @ApiTags('coffees')
 @Controller('coffees')
@@ -32,11 +34,7 @@ export class CoffeesController {
 
     @Public()
     @Get()
-    findAll(
-        @Query() paginationQuery: PaginationQueryDto,
-        // @Protocol('https') prtcl: string,
-    ) {
-        // console.log(prtcl);
+    findAll(@Query() paginationQuery: PaginationQueryDto) {
         return this.service.findAll(paginationQuery);
     }
 
@@ -46,7 +44,8 @@ export class CoffeesController {
         return this.service.findOne(id);
     }
 
-    @Roles(Role.Admin)
+    // @Roles(Role.Admin)
+    @Permissions(Permission.CreateCoffee)
     @Post()
     create(@Body() coffeeDto: CreateCoffeeDto) {
         return this.service.create(coffeeDto);
