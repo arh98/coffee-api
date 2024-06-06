@@ -7,7 +7,7 @@ export default registerAs('jwt', () => {
         issuer: process.env.JWT_ISSUER,
         accessTokenTtl: parseInt(process.env.JWT_EXP ?? '3600', 10),
         refreshTokenTtl: parseInt(
-            process.env.JWT_REFRESH_TTL ?? '86400',
+            process.env.JWT_REFRESH_EXP ?? '86400',
             10,
         ),
     };

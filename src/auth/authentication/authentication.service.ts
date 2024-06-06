@@ -24,17 +24,17 @@ export class AuthenticationService {
     constructor(
         @InjectRepository(User)
         private readonly userRepo: Repository<User>,
-        private readonly hashingService: HashingService,
+        private readonly hasher: HashingService,
         private readonly jwtService: JwtService,
         @Inject(jwtConfig.KEY)
-        private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-        private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+        private readonly jwtConf: ConfigType<typeof jwtConfig>,
+        private readonly idsStorage: RefreshTokenIdsStorage,
     ) {}
     async signUp(signUpDto: SignUpDto) {
         try {
             const user = new User();
             user.email = signUpDto.email;
-            user.password = await this.hashingService.hash(signUpDto.password);
+            user.password = await this.hasher.hash(signUpDto.password);
 
             await this.userRepo.save(user);
         } catch (err) {
@@ -53,7 +53,7 @@ export class AuthenticationService {
         if (!user) {
             throw new UnauthorizedException('User does not exist');
         }
-        const isEqual = await this.hashingService.compare(
+        const isEqual = await this.hasher.compare(
             signInDto.password,
             user.password,
         );
@@ -65,17 +65,18 @@ export class AuthenticationService {
     }
 
     async generateTokens(user: User) {
-        const refreshTokenId = randomUUID();
-        const refreshTokenTtl = this.jwtConfiguration.refreshTokenTtl;
+        const refreshTokenId = randomUUID(),
+            refreshTokenExp = this.jwtConf.refreshTokenTtl,
+            accTokenExp = this.jwtConf.accessTokenTtl;
 
         const [accessToken, refreshToken] = await Promise.all([
-            this.signToken<Partial<ActiveUserData>>(+user.id, refreshTokenTtl, {
+            this.signToken<Partial<ActiveUserData>>(user.id, accTokenExp, {
                 email: user.email,
                 role: user.role,
             }),
-            this.signToken(+user.id, refreshTokenTtl, { refreshTokenId }),
+            this.signToken(user.id, refreshTokenExp, { refreshTokenId }),
         ]);
-        await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
+        await this.idsStorage.insert(user.id, refreshTokenId);
 
         return { accessToken, refreshToken };
     }
@@ -85,26 +86,26 @@ export class AuthenticationService {
             const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
                 Pick<ActiveUserData, 'sub'> & { refreshTokenId: string }
             >(refreshTokenDto.refreshToken, {
-                secret: this.jwtConfiguration.secret,
-                audience: this.jwtConfiguration.audience,
-                issuer: this.jwtConfiguration.issuer,
+                secret: this.jwtConf.secret,
+                audience: this.jwtConf.audience,
+                issuer: this.jwtConf.issuer,
             });
             const user = await this.userRepo.findOneOrFail({
                 where: { id: sub },
             });
-            const isValid = await this.refreshTokenIdsStorage.validate(
+            const isValid = await this.idsStorage.validate(
                 user.id,
                 refreshTokenId,
             );
             if (isValid) {
-                await this.refreshTokenIdsStorage.invalidate(user.id);
+                await this.idsStorage.invalidate(user.id);
             } else {
                 throw new Error('Refresh Token is invalid');
             }
             return this.generateTokens(user);
         } catch (err) {
             if (err instanceof InvalidateRefreshTokenError) {
-                throw new UnauthorizedException('Access denied');
+                throw new UnauthorizedException('Access denied!');
             }
             throw new UnauthorizedException();
         }
@@ -117,9 +118,9 @@ export class AuthenticationService {
                 ...payload,
             },
             {
-                audience: this.jwtConfiguration.audience,
-                issuer: this.jwtConfiguration.issuer,
-                secret: this.jwtConfiguration.secret,
+                audience: this.jwtConf.audience,
+                issuer: this.jwtConf.issuer,
+                secret: this.jwtConf.secret,
                 expiresIn,
             },
         );
