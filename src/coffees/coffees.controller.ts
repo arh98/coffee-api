@@ -21,6 +21,8 @@ import { Roles } from 'src/auth/authorization/decorators/role.decorator';
 import { Role } from 'src/users/enums/user-role.enum';
 import { Permission } from 'src/auth/authorization/permission.type';
 import { Permissions } from 'src/auth/authorization/decorators/permission.decorator';
+import { Policies } from 'src/auth/authorization/decorators/policy.decorator';
+import { FrameworkContributorPolicy } from 'src/auth/authorization/policies/framework-contributor.policy';
 
 @ApiTags('coffees')
 @Controller('coffees')
@@ -45,7 +47,9 @@ export class CoffeesController {
     }
 
     // @Roles(Role.Admin)
-    @Permissions(Permission.CreateCoffee)
+    // @Permissions(Permission.CreateCoffee)
+    @Policies(new FrameworkContributorPolicy())
+    // new MinAgePolicy(18), new OnlyAdminPolicy()
     @Post()
     create(@Body() coffeeDto: CreateCoffeeDto) {
         return this.service.create(coffeeDto);
