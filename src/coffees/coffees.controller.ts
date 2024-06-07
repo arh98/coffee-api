@@ -23,9 +23,12 @@ import { Permission } from 'src/auth/authorization/permission.type';
 import { Permissions } from 'src/auth/authorization/decorators/permission.decorator';
 import { Policies } from 'src/auth/authorization/decorators/policy.decorator';
 import { FrameworkContributorPolicy } from 'src/auth/authorization/policies/framework-contributor.policy';
+import { Auth } from 'src/auth/authentication/decorators/auth.decorator';
+import { AuthType } from 'src/auth/authentication/enums/auth-types.enum';
 
 @ApiTags('coffees')
 @Controller('coffees')
+@Auth(AuthType.Bearer, AuthType.ApiKey)
 export class CoffeesController {
     constructor(
         private readonly service: CoffeesService,
