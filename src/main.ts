@@ -25,7 +25,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, option);
     SwaggerModule.setup('api', app, document);
 
-    app.useGlobalFilters(new HttpExceptionFilter());
+    // app.useGlobalFilters(new HttpExceptionFilter());
     app.useGlobalInterceptors(
         // new WrapResponseInterceptor(),
         new TimeoutInterceptor(),
