@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule,  } from './auth/auth.module';
 import ormConfig from './config/orm.config';
 import ormConfigProd from './config/orm.config.prod';
 import validationSchema from './config/validation-schema';
@@ -27,6 +29,8 @@ import validationSchema from './config/validation-schema';
         }),
         CoffeesModule,
         CommonModule,
+        UsersModule,
+        AuthModule,
     ],
     controllers: [AppController],
 })
