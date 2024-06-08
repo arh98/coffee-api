@@ -18,6 +18,7 @@ import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { InvalidateRefreshTokenError } from './errors/invalidate-refresh-token.error';
 import { randomUUID } from 'crypto';
+import { OtpAuthenticationService } from './otp-authentication.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -29,6 +30,7 @@ export class AuthenticationService {
         @Inject(jwtConfig.KEY)
         private readonly jwtConf: ConfigType<typeof jwtConfig>,
         private readonly idsStorage: RefreshTokenIdsStorage,
+        private readonly otpAuthService: OtpAuthenticationService,
     ) {}
     async signUp(signUpDto: SignUpDto) {
         try {
@@ -59,6 +61,15 @@ export class AuthenticationService {
         );
         if (!isEqual) {
             throw new UnauthorizedException('Wrong password');
+        }
+        if (user.isTfaEnabled) {
+            const isValid = this.otpAuthService.verifyCode(
+                signInDto.tfaCode,
+                user.tfaSecret,
+            );
+            if (!isValid) {
+                throw new UnauthorizedException('Invalid 2FA code');
+            }
         }
 
         return await this.generateTokens(user);
