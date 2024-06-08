@@ -1,4 +1,4 @@
-import { ActiveUserData } from './../interfaces/active-user-data.interface';
+import { ActiveUserData } from '../../interfaces/active-user-data.interface';
 import {
     ConflictException,
     Inject,
@@ -8,15 +8,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { SignUpDto } from './dto/sign-up.dto';
-import { HashingService } from '../hashing/hashing.service';
-import { SignInDto } from './dto/sign-in.dto';
+import { SignUpDto } from '../dto/sign-up.dto';
+import { HashingService } from '../../hashing/hashing.service';
+import { SignInDto } from '../dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import jwtConfig from '../config/jwt-config';
+import jwtConfig from '../../config/jwt-config';
 import { ConfigType } from '@nestjs/config';
 import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { InvalidateRefreshTokenError } from './errors/invalidate-refresh-token.error';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { InvalidateRefreshTokenError } from '../errors/invalidate-refresh-token.error';
 import { randomUUID } from 'crypto';
 import { OtpAuthenticationService } from './otp-authentication.service';
 

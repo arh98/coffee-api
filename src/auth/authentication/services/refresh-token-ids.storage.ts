@@ -4,7 +4,7 @@ import {
     OnApplicationShutdown,
 } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { InvalidateRefreshTokenError } from './errors/invalidate-refresh-token.error';
+import { InvalidateRefreshTokenError } from '../errors/invalidate-refresh-token.error';
 
 @Injectable()
 export class RefreshTokenIdsStorage

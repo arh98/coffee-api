@@ -7,7 +7,7 @@ import {
     Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from './services/authentication.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthType } from './enums/auth-types.enum';
@@ -16,7 +16,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ActiveUser } from '../decorators/active-user.decorator';
 import { toFileStream } from 'qrcode';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
-import { OtpAuthenticationService } from './otp-authentication.service';
+import { OtpAuthenticationService } from './services/otp-authentication.service';
 
 @Auth(AuthType.None)
 @Controller('auth')

@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { REQUEST_USER_KEY } from 'src/auth/auth.constants';
 import { ActiveUserData } from 'src/auth/interfaces/active-user-data.interface';
 import { ApiKey } from 'src/users/api-keys/entities/api-key.entity';
-import { ApiKeysService } from '../api-key.service';
+import { ApiKeysService } from '../services/api-key.service';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
