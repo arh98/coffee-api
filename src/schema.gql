@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""flavor model"""
+type Flavor {
+  id: Float!
+  name: String!
+  coffees: [Coffee!]!
+}
+
+"""coffee model"""
+type Coffee {
+  """unique identifier"""
+  id: ID!
+  name: String!
+  brand: String!
+  flavors: [Flavor!]
+}
+
+type Query {
+  coffees: [Coffee!]!
+  coffee(id: ID!): Coffee!
+}
+
+type Mutation {
+  createCoffee(createCoffeeInput: CreateCoffeeInput!): Coffee!
+  updateCoffee(updateCoffeeInput: UpdateCoffeeInput!, id: Float!): Coffee!
+  deleteCoffee(id: Float!): Coffee!
+}
+
+input CreateCoffeeInput {
+  name: String!
+  brand: String!
+  flavors: [String!]!
+}
+
+input UpdateCoffeeInput {
+  name: String
+  brand: String
+  flavors: [String!]
+}

@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
     Column,
     Entity,
@@ -8,25 +9,22 @@ import {
 import { Flavor } from './flavor.entity';
 
 @Entity()
+@ObjectType({ description: 'coffee model' })
 export class Coffee {
     @PrimaryGeneratedColumn()
+    @Field(() => ID, { description: 'unique identifier' })
     id: number;
 
     @Column()
-    title: string;
-
-    @Column({ nullable: true })
-    description: string;
+    name: string;
 
     @Column()
     brand: string;
-
-    @Column({ default: 0 })
-    recommendations: number;
 
     @JoinTable()
     @ManyToMany(() => Flavor, (flavor) => flavor.coffees, {
         cascade: true,
     })
-    flavors: Flavor[];
+    flavors?: Flavor[];
 }
+// without enabling cli plugin , we have to manually annotate props with @Field()
