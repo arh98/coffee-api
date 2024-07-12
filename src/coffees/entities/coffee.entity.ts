@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
     Column,
+    CreateDateColumn,
     Entity,
     JoinTable,
     ManyToMany,
@@ -26,5 +27,8 @@ export class Coffee {
         cascade: true,
     })
     flavors?: Flavor[];
+
+    @CreateDateColumn()
+    createdAt?: Date;
 }
 // without enabling cli plugin , we have to manually annotate props with @Field()
