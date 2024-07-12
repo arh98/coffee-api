@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Flavor } from './flavor.entity';
 import { Drink } from 'src/common/interfaces/drink.interface';
+import { CoffeeType } from 'src/common/enum/coffee-type.enum';
 
 @Entity()
 @ObjectType({ description: 'coffee model', implements: () => Drink })
@@ -31,5 +32,8 @@ export class Coffee implements Drink {
 
     @CreateDateColumn()
     createdAt?: Date;
+
+    @Column({ nullable: true })
+    type?: CoffeeType;
 }
 // without enabling cli plugin , we have to manually annotate props with @Field()
