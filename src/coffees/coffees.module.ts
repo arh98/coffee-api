@@ -7,6 +7,7 @@ import { Flavor } from './entities/flavor.entity';
 import { CoffeeFlavorsResolver } from './coffee-flavors.resolver';
 import { DateScalar } from 'src/common/scalars/date.scalar';
 import { PubSubModule } from 'src/pub-sub/pub-sub.module';
+import { FlavorsByCoffeeLoader } from './data-loader/flavors-by-coffee.loader';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Coffee, Flavor]), PubSubModule],
@@ -15,6 +16,7 @@ import { PubSubModule } from 'src/pub-sub/pub-sub.module';
         CoffeesService,
         CoffeeFlavorsResolver,
         DateScalar,
+        FlavorsByCoffeeLoader,
     ],
 })
 export class CoffeesModule {}
