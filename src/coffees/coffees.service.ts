@@ -1,3 +1,4 @@
+import { PubSub } from 'graphql-subscriptions';
 import { UserInputError } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +15,7 @@ export class CoffeesService {
         private readonly coffeeRepo: Repository<Coffee>,
         @InjectRepository(Flavor)
         private readonly flavorRepo: Repository<Flavor>,
+        private readonly pubSub: PubSub,
     ) {}
 
     async findAll() {
@@ -35,7 +37,9 @@ export class CoffeesService {
             ...input,
             flavors,
         });
-        return this.coffeeRepo.save(coffee);
+        const newCoffee = await this.coffeeRepo.save(coffee);
+        this.pubSub.publish('CoffeeAdded', { coffeeAdded: newCoffee });
+        return newCoffee;
     }
 
     async update(id: number, input: UpdateCoffeeInput) {

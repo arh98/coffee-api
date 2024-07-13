@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { CoffeesModule } from './coffees/coffees.module';
 import { DrinksResolver } from './drinks/drinks.resolver';
 import { Tea } from './teas/entities/tea.entity';
+import { PubSubModule } from './pub-sub/pub-sub.module';
 
 @Module({
     imports: [
@@ -26,8 +27,10 @@ import { Tea } from './teas/entities/tea.entity';
             buildSchemaOptions: {
                 orphanedTypes: [Tea],
             },
+            installSubscriptionHandlers: true,
         }),
         CoffeesModule,
+        PubSubModule,
     ],
     controllers: [AppController],
     providers: [DrinksResolver],
